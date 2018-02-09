@@ -2,6 +2,7 @@
 <%@page import="board.BoardDBBean"%>
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"></head>
 <%
 	String boardid = request.getParameter("boardid");
 	if(boardid==null) boardid = "1";
