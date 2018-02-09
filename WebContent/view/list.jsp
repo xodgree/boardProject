@@ -1,38 +1,67 @@
+<!-- 데이터베이스와 관련된 java 클래스를 import합니다 -->
 <%@page import="board.BoardDataBean"%>
-<%@page import="java.util.List"%>
 <%@page import="board.BoardDBBean"%>
+<%@page import="java.util.List"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
+<%request.setCharacterEncoding("euc-kr");%> <!-- 한글 인코딩 -->
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<title>Insert title here</title>
-</head>
+	<!-- 일반적인 head 태그 사용 -->
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+		<title>Insert title here</title>
+	</head>
 <body>
-<%request.setCharacterEncoding("euc-kr");%>
-<%String boardid = request.getParameter("boardid");
-	if(boardid == null) boardid="1";%>
+
+<%
+// request 기본 객체는 웹 브라우저, 즉 클라이언트가 전송한 정보 및 서버 정보를 구할 수 있는 메모드를 제공합니다.
+// request.getParameter(): parameter의 value를 얻는다.
+String boardid = request.getParameter("boardid");
+
+if(boardid == null)
+	boardid="1";
+%>
+
 <%
 	int pageSize=5;
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	
+	// parameter "pageNum"로 전달된 value를 얻는다.
+	// parameter로 전달된 값이 없는 경우, null을 return합니다.
 	String pageNum = request.getParameter("pageNum");
-	if(pageNum==null || pageNum==""){
-		pageNum = "1";}
+	
+	// "pageNum"의 value가 없거나, 공백이면 1번 페이지로 
+	if(pageNum==null || pageNum=="") {
+		pageNum = "1";
+	}
+	
+	// String pageNum을 int로 casting
 	int currentPage = Integer.parseInt(pageNum);
-	int startRow = (currentPage-1)*pageSize+1;
-	int endRow = currentPage* pageSize;
+	int startRow = (currentPage - 1) * pageSize + 1; // 이건 뭐지?
+	int endRow = currentPage * pageSize; // 이건 뭐지?
 	int count = 0;
 	int number = 0;
+	
+	// article 목록을 저장하기 위한 List
 	List articleList = null;
+	
+	// 싱글톤 객체의 레퍼런스 변수를 얻습니다.
+	// 싱글톤 객체이므로 객체를 직접 생성하지 않습니다.
 	BoardDBBean dbPro = BoardDBBean.getInstance();
+	
+	// Article의 개수를 가져옵니다.
 	count = dbPro.getArticleCount(boardid);
-	if(count > 0){
-		articleList = dbPro.getArticles(startRow, endRow, boardid);}
-			number=count - (currentPage-1)*pageSize;
-
+	
+	if(count > 0) {
+		articleList = dbPro.getArticles(startRow, endRow, boardid);
+	}
+	
+	number = count - (currentPage - 1) * pageSize;
 %>
 
 <p class="w3-left" style="padding-left: 30px;">

@@ -8,55 +8,77 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-//�̱���
+// 싱글톤 패턴(singleton pattern)
 public class BoardDBBean {
+	// 정적(static) 변수로 지정하였기 때문에 이 변수는 모든 BoardDBBean 객체가 공유합니다.
+	// 싱글톤 패턴의 핵심입니다.
+	// instance 변수가 생성될 때,
+	// 바로 BoardDBBean 객체가 하나 생성되고 instance 레퍼런스 변수로 이것을 참조합니다.
 	private static BoardDBBean instance = new BoardDBBean();
+	
+	// 생성자는 private으로 선언합니다.
+	// 외부에서는 생성자를 직접 호출할 수 없습니다. 즉, 생성을 제한합니다.
 	private BoardDBBean() {
-		
 	}
+	
+	// instance 레퍼런스 변수를 얻습니다.
+	// public static 메소드이므로 어느 곳에서나 접근할 수 있습니다.
+	// static 함수이므로 객체를 생성하지 않아도 접근할 수 있습니다.
 	public static BoardDBBean getInstance() {
 		return instance;
 	}
-
-
-public static Connection getConnection(){
-	Connection con = null;
-	try {
-		String jdbcUrl = "jdbc:oracle:thin:@localhost:1521:orcl";
-		String dbUser = "scott";
-		String dbPass = "tiger";
-		Class.forName("oracle.jdbc.driver.OracleDriver");
-		con = DriverManager.getConnection(jdbcUrl, dbUser, dbPass);
-	}catch(Exception e) {
-		e.printStackTrace();
-	}
-	return con;
-	}
-
-public void close(Connection con, ResultSet rs, PreparedStatement pstmt) {
-	if(rs!=null) 
+	
+	// DB에 접속하는 메소드입니다.
+	// DB 계정 정보를 포함하고 있습니다.
+	public static Connection getConnection(){
+		Connection con = null;
+		
 		try {
-			rs.close();
-		}catch(SQLException ex) {}
-	if(pstmt!=null)
-		try {
-			pstmt.close();
-		}catch(SQLException ex) {}
-	if(con!=null)
-		try {
-			con.close();
-		}catch(SQLException ex) {}
+			// DB의 URL, 사용자 계정, 비밀번호
+			String jdbcUrl = "jdbc:oracle:thin:@localhost:1521:orcl";
+			String dbUser = "scott";
+			String dbPass = "tiger";
+			
+			// 리플렌션(reflection) 동적 로딩에 대한 코드이므로 몰라도 됩니다.
+			// 이렇게 사용해야 한다는 것만 알고 넘깁니다.
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			
+			// DB URL,계정, 비밀번호를 가지고 DB에 접속합니다.
+			con = DriverManager.getConnection(jdbcUrl, dbUser, dbPass);
+		} catch(Exception e) {
+			// 예외(Exception)이 발생하면 어떤 문제인지 파악하기 위한 코드가 여기에 들어갑니다.
+			e.printStackTrace();
+		}
+		
+		// Exception이 발생하지 않았다면 무사히 접속하였습니다.
+		// 접속 정보를 return합니다.
+		return con;
 	}
-
-
-public void insertArticle(BoardDataBean article) {
+	
+	public void close(Connection con, ResultSet rs, PreparedStatement pstmt) {
+		if(rs!=null) 
+			try {
+				rs.close();
+			}catch(SQLException ex) {}
+		if(pstmt!=null)
+			try {
+				pstmt.close();
+			}catch(SQLException ex) {}
+		if(con!=null)
+			try {
+				con.close();
+			}catch(SQLException ex) {}
+		}
+	
+	
+	public void insertArticle(BoardDataBean article) {
 		String sql="";
 		Connection con = getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		int number=0;
 		
-		try {									//boardser ������ / ���� �������� ������ ��ȯ
+		try {									//boardser ½ÃÄö½º / ÇöÀç ½ÃÄö½ºÀÇ ´ÙÀ½°ª ¹ÝÈ¯
 			pstmt = con.prepareStatement("select boardser.nextval from dual");
 			rs = pstmt.executeQuery();
 			if(rs.next())
@@ -67,7 +89,7 @@ public void insertArticle(BoardDataBean article) {
 			int ref = article.getRef();	
 			int re_step = article.getRe_step();
 			int re_level = article.getRe_level();
-			//��۾���
+			//´ä±Û¾²±â
 			if(num!=0) {
 				sql = "update board set re_step=re_step+1 where ref=? and re_step> ? and boardid = ?";
 				pstmt = con.prepareStatement(sql);
@@ -84,7 +106,7 @@ public void insertArticle(BoardDataBean article) {
 				re_level=0;
 			}
 			
-			//���۾���
+			//»õ±Û¾²±â
 			sql = "insert into board(num,writer,email,subject,passwd,reg_date,";
 			sql += "ref,re_step,re_level,content,ip,boardid) "
 				+ "values(?,?,?,?,?,sysdate,?,?,?,?,?, ?)";
@@ -110,9 +132,16 @@ public void insertArticle(BoardDataBean article) {
 			}
 	}
 
+	// article의 개수를 얻습니다.
 	public int getArticleCount(String boardid) {
-		int x=0;
-		String sql="select nvl(count(*),0) from board where boardid = ?";
+		int x = 0;
+		
+		// nvl은 null 데이터라면 0으로 가정하는 쿼리
+		// nvl(count(*),0)이 의미하는 내용은 다음 주소에 잘 설명되어 있습니다.
+		// http://www.commit.co.kr/entry/%EC%A7%91%EA%B3%84%ED%95%A8%EC%88%98%EC%99%80-%EA%B3%B5%EC%A7%91%ED%95%A9%EC%9D%98-NULL-%EC%B2%98%EB%A6%AC
+		String sql = "select nvl(count(*),0) from board where boardid = ?";
+		
+		// DB에 접속하고, 접속 정보를 얻습니다.
 		Connection con = getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
