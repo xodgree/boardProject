@@ -161,29 +161,59 @@ public class BoardDBBean {
 		return x;
 	}
 	
+	// 
 	public List getArticles(int startRow, int endRow, String boardid) {
+		// Connection, PreparedStatement, ResultSet 등 
+		// DB에 접속하여 작업하기 위해 필요한 레퍼런스 변수를 선언합니다.
+		// 위의 3가지는 DB 작업에 필요한 기본 요소들입니다.
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+
+		// Article을 저장할 ArrayList를 선언합니다.
 		List articleList = null;
 		String sql = "";
+
 		try {
+			// getConnection()은 해당 메소드에 자세하게 설명했습니다.
 			conn = getConnection();
+
+			// PreparedStatement로 실행할 쿼리를 만듭니다.
+			// 이 쿼리는 placeholder '?'를 포함하고 있습니다.
+			// placeholder '?'는 PreparedStatement에 쿼리를 등록한 후, 설정할 수 있습니다.
 			sql = " select * from" + "( select rownum rnum ,a.* "
 			         + " from (select num,writer,email,subject,passwd,"
 			         + "reg_date,readcount,ref,re_step,re_level,content,"
 			         + "ip from board where boardid = ? order by ref desc , re_step) "
 			         + " a ) where rnum between ? and ? ";
+
+			// Connection에 쿼리를 등록하고 PreparedStatement에 얻습니다.
 			pstmt = conn.prepareStatement(sql);
+
+			// PreparedStatement의 placeholder '?'에
+			// 인자로 전달된 boardid, startRow, endRow를 넣습니다.
 			pstmt.setString(1, boardid);
 			pstmt.setInt(2, startRow);
 			pstmt.setInt(3, endRow);
+
+			// PreparedStatement로 등록된 쿼리를 실행합니다.
+			// Select 쿼리이므로 ResultSet으로 그 결과를 얻습니다.
 			rs = pstmt.executeQuery();
 			
+			// ResultSet의 데이터를 확인합니다
+			// ResultSet.next()는 처음 실행되면 ResultSet이 가지고 있는 첫번째 데이터를 가리킵니다.
+			// 만약 ResultSet이 가지고 있는 데이터가 없다면 null을 return합니다.
 			if(rs.next()) {
+				// ResultSet이 한줄이 가지고 있는 데이터를 저장하기 위한 ArrayList를 생성합니다.
+				// MOodel 만든 BoardDataBean 객체를 보관하기 위해 사용합니다.
 				articleList = new ArrayList();
+
 				do {
+					// 미리 준비해둔 Model인 BoardDataBean 객체를 생성합니다.
 					BoardDataBean article = new BoardDataBean();
+
+					// ResultSet에서 필요한 데이터를 column 이름으로 각각 얻습니다.
+					// 얻은 데이터는 Model인 BoardDataBean 객체의 setter를 이용해서 값을 설정해줍니다.
 					article.setNum(rs.getInt("num"));
 					article.setWriter(rs.getString("writer"));
 					article.setEmail(rs.getString("email"));
@@ -196,14 +226,20 @@ public class BoardDBBean {
 					article.setRe_level(rs.getInt("re_level"));
 					article.setContent(rs.getString("content"));
 					article.setIp(rs.getString("ip"));
+
+					// ResultSet의 데이터, 즉, Article 데이터가 BoardDataBean 객체로 전달되었습니다.
+					// 앞에서 만들어 둔 BoardDataBean 객체를 보관하기 위해서 생성하였던 ArrayList에 저장합니다.
 					articleList.add(article);
-					
-				}while(rs.next());
-			}}catch(Exception ex) {
-				ex.printStackTrace();
-			}finally {close(conn, rs, pstmt);}
-				return articleList;
+				} while(rs.next());
+				// 이 과정은 ResultSet에 더이상 데이터가 없을때까지 진행됩니다.
+			}
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			close(conn, rs, pstmt);
 		}
+		return articleList;
+	}
 	
 	public BoardDataBean getArticle(int num, String boardid, String chk) {
 		Connection conn = null;

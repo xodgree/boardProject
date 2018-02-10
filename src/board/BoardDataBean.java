@@ -2,6 +2,7 @@ package board;
 
 import java.util.Date;
 
+// Article의 데이터를 담는 클래스입니다.
 public class BoardDataBean {
 	private int num;
 	private String boardid;
@@ -18,7 +19,6 @@ public class BoardDataBean {
 	private String ip;
 	private String filename;
 	private int filesize;
-	
 	
 	public int getNum() {
 		return num;
