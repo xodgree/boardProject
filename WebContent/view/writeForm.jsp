@@ -1,87 +1,74 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"></head>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
 <html>
 <head>
-<title>게시판</title>
+<style>
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+</style>
+	<title>Users</title>
 </head>
-<%
-	int num =0, ref=0, re_step=0, re_level=0;
-	String boardid = request.getParameter("boardid");
-	if(boardid==null) boardid = "1";
 
-	if(request.getParameter("num")!=null){
-	num = Integer.parseInt(request.getParameter("num")) ;
-	ref = Integer.parseInt(request.getParameter("ref")) ;
-	re_step = Integer.parseInt(request.getParameter("re_step")) ;
-	re_level = Integer.parseInt(request.getParameter("re_level")) ;
-	}
-%>
-<p class="w3-left"  style="padding-left:30px;"></p>
-<div class="w3-container">
+<!-- center 태그는 이제 사용하지 않도록 합니다. 사라질 예정이라서 warning이 발생합니다.-->
+<div class = "container" style = "text-align:center">
+	<div class = "row justify-content-md-center">
 
-<center><b>글쓰기</b>
-<br>
-<form method="post" name="writeform" action="<%=request.getContextPath() %>/view/writePro.jsp" >
-<input type="hidden" name="boardid" value="<%=boardid %>">
-<input type="hidden" name="num" value="<%=num %>">
-<input type="hidden" name="ref" value="<%=ref %>">
-<input type="hidden" name="re_level" value="<%=re_level %>">
-<input type="hidden" name="re_step" value="<%=re_step %>">
-
-
-
-<table class="w3-table-all"  style="width:70%;" >
-   <tr>
-    <td align="right" colspan="2" >
-	    <a href="list.jsp"> 글목록</a> 
-   </td>
-   </tr>
-   <tr>
-    <td  width="70"   align="center">이 름</td>
-    <td  width="330">
-       <input type="text" size="10" maxlength="10" name="writer"></td>
-  </tr>
-  <tr>
-    <td  width="70"   align="center" >제 목
-    </td>
-    <td width="330">
+<!-- form, input tag 사용 -->
+<form method = "post" name = "writeform" action = "test.jsp" >
  
- 	<%if(request.getParameter("num")==null) {%>
-       <input type="text" size="40" maxlength="50" name="subject"> <!-- 새글인 경우 -->
-       <%}else{ %>
-	   <input type="text" size="40" maxlength="50" name="subject" value="[답글]">	 <!-- 답글인 경우 -->
-	   <%} %>
+<!-- table, th, tr, td tag에 관련된 설명은 다음 자료를 참고합니다.
+<th>: table head, 테이블의 제목
+<tr>: table row, 태이블의  한 행(row)
+<td>: table data, 테이블의 한 셀 
+참고: http://aboooks.tistory.com/59 -->
+
+<table class = "table" style = "width:50%;">
+	<tr>
+		<td align = "center" colspan = "2" >
+		<!-- redirection 해야할 jsp -->
+	    <a href="list.jsp">users</a> 
+		</td>
+	</tr>
    
-   </td>
-  </tr>
-  <tr>
-    <td  width="70"   align="center">Email</td>
-    <td  width="330">
-       <input type="text" size="40" maxlength="30" name="email" ></td>
-  </tr>
-  <tr>
-    <td  width="70"   align="center" >내 용</td>
-    <td  width="330" >
-     <textarea name="content" rows="13" cols="40"></textarea> </td>
-  </tr>
-  <tr>
-    <td  width="70"   align="center" >비밀번호</td>
-    <td  width="330" >
-     <input type="password" size="8" maxlength="12" name="passwd"> 
-	 </td>
-  </tr>
-<tr>      
- <td colspan=2  align="center"> 
-  <input type="submit" value="글쓰기" >  
-  <input type="reset" value="다시작성">
-  <input type="button" value="목록보기" OnClick="window.location='list.jsp'">
-</td></tr></table>    
-     
-</form>  </center></div>  
+   	<!-- name input -->
+	<tr>
+		<td width = "70" align = "center">name</td>
+		
+		<td width = "330">
+		<input type = "text" size = "10" maxlength = "10" name = "name"></td>
+	</tr>
+	
+	<!-- email input -->
+	<tr>
+		<td width = "70" align = "center">email</td>
+		
+		<td width = "330">
+		<input type = "text" size = "40" maxlength = "50" name = "email"></td>
+ 	</tr>
+ 	
+ 	<!-- passwd input -->
+ 	<tr>
+		<td width = "70" align = "center">passwd</td>
+		
+		<td width = "330">
+		<input type = "text" size = "40" maxlength = "50" name = "passwd"></td>
+ 	</tr>
+</table>
 
+<input type = "submit"/>
 
-
-
+</form>
+</div>
+</div> 
 </body>
 </html>      
