@@ -21,6 +21,7 @@
 
 <!-- center 태그는 이제 사용하지 않도록 합니다. 사라질 예정이라서 warning이 발생합니다.-->
 <div class = "container" style = "text-align:center">
+<p>Users</p>
 	<div class = "row justify-content-md-center">
 
 <!-- form, input tag 사용 -->
@@ -32,38 +33,31 @@
 <td>: table data, 테이블의 한 셀 
 참고: http://aboooks.tistory.com/59 -->
 
-<table class = "table" style = "width:50%;">
-	<tr>
-		<td align = "center" colspan = "2" >
-		<!-- redirection 해야할 jsp -->
-	    <a href="list.jsp">users</a> 
-		</td>
-	</tr>
-   
-   	<!-- name input -->
-	<tr>
-		<td width = "70" align = "center">name</td>
+	<table class = "table" style = "width:50%;">
+	   	<!-- name input -->
+		<tr>
+			<td width = "70" align = "center">name</td>
+			
+			<td width = "330">
+			<input type = "text" size = "10" maxlength = "10" name = "name"></td>
+		</tr>
 		
-		<td width = "330">
-		<input type = "text" size = "10" maxlength = "10" name = "name"></td>
-	</tr>
-	
-	<!-- email input -->
-	<tr>
-		<td width = "70" align = "center">email</td>
-		
-		<td width = "330">
-		<input type = "text" size = "40" maxlength = "50" name = "email"></td>
- 	</tr>
- 	
- 	<!-- passwd input -->
- 	<tr>
-		<td width = "70" align = "center">passwd</td>
-		
-		<td width = "330">
-		<input type = "text" size = "40" maxlength = "50" name = "passwd"></td>
- 	</tr>
-</table>
+		<!-- email input -->
+		<tr>
+			<td width = "70" align = "center">email</td>
+			
+			<td width = "330">
+			<input type = "text" size = "40" maxlength = "50" name = "email"></td>
+	 	</tr>
+	 	
+	 	<!-- passwd input -->
+	 	<tr>
+			<td width = "70" align = "center">passwd</td>
+			
+			<td width = "330">
+			<input type = "text" size = "40" maxlength = "50" name = "passwd"></td>
+	 	</tr>
+	</table>
 
 <input type = "submit"/>
 

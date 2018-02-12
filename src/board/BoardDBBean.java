@@ -72,17 +72,32 @@ public class BoardDBBean {
 	
 	
 	public void insertArticle(BoardDataBean article) {
-		String sql="";
+		// Connection: DB 접속 정보를 저장합니다.
+		// PreparedStatement : 쿼리를 등록하고 실행합니다.
+		// ResultSet: DB에 쿼리를 요청한 결과를 저장합니다.
+		// 이 세 객체는 DB에 접속하여 쿼리를 보내서 그 결과를 저장하는데 필요한 요소들입니다.
+		String sql = "";
 		Connection con = getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		int number=0;
 		
-		try {									//boardser ½ÃÄö½º / ÇöÀç ½ÃÄö½ºÀÇ ´ÙÀ½°ª ¹ÝÈ¯
+		// 접속 실패, 파일 열기 실패 등 예외 상황이 발생할 수 있는 코드를 실행합니다.
+		// 예외 상황이 발생하면 Exception으로 이동합니다.
+		// Exception에서 예외 상황을 처리합니다.
+		try {
+			// Connection 객체에 DB에 전달할 쿼리를 등록합니다.
+			// 결과로 PreparedStatement를 얻습니다.
+			// boardser는 시퀀스입니다. boardser.nextval은 시퀀스의 다음 값을 얻습니다.
 			pstmt = con.prepareStatement("select boardser.nextval from dual");
+			
+			// 쿼리를 실행합니다.
+			// ResultSet에 쿼리 결과를 저장합니다.
 			rs = pstmt.executeQuery();
+			
+			// 만약 ResultSet에 아무것도 없다면, ResultSet.next()는 false을 반환합니다.
 			if(rs.next())
-				number = rs.getInt(1)+1;
+				number = rs.getInt(1) + 1;
 			else number = 1;
 		
 			int num = article.getNum();	
