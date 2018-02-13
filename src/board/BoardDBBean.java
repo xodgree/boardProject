@@ -35,9 +35,9 @@ public class BoardDBBean {
 		
 		try {
 			// DB의 URL, 사용자 계정, 비밀번호
-			String jdbcUrl = "jdbc:oracle:thin:@localhost:1521:orcl";
-			String dbUser = "scott";
-			String dbPass = "tiger";
+			String jdbcUrl = "jdbc:oracle:thin:@localhost:1521:xe";
+			String dbUser = "mooneegee";
+			String dbPass = "1227";
 			
 			// 리플렌션(reflection) 동적 로딩에 대한 코드이므로 몰라도 됩니다.
 			// 이렇게 사용해야 한다는 것만 알고 넘깁니다.
@@ -346,8 +346,29 @@ public class BoardDBBean {
 		return x;
 	}
 	
-	
-	
-	
-	
+	public ArrayList<Article> getDiaryArticles() {
+		ArrayList<Article> articles = new ArrayList<Article>();
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String sql = "select * from articles";
+		
+		try {
+			connection = getConnection();
+			ps = connection.prepareStatement(sql);
+			rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				Article at = new Article();
+				at.setComment(rs.getString("DIARYCOMMENT"));
+				at.setPhoto(rs.getString("photo"));
+				articles.add(at);
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} finally {
+		}
+		
+		return articles;
+	}
 }

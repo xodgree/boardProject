@@ -1,8 +1,6 @@
-<%@page import="board.BoardDataBean"%>
 <%@page import="board.BoardDBBean"%>
-<%@page import="java.util.List"%>
-<%@page import="java.text.SimpleDateFormat"%>
-<%@ page import = "java.sql.*" %>
+<%@page import="java.util.ArrayList"%>
+<%@page import="board.Article"%>
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
 <%request.setCharacterEncoding("euc-kr");%> <!-- 한글 인코딩 -->
@@ -29,40 +27,6 @@
 </head>
 
 <body id="page-top">
-<%
-Connection con = null;
-
-try {
-	// DB의 URL, 사용자 계정, 비밀번호
-	String jdbcUrl = "jdbc:oracle:thin:@localhost:1521:xe";
-	String dbUser = "mooneegee";
-	String dbPass = "1227";
-	
-	// 리플렌션(reflection) 동적 로딩에 대한 코드이므로 몰라도 됩니다.
-	// 이렇게 사용해야 한다는 것만 알고 넘깁니다.
-	Class.forName("oracle.jdbc.driver.OracleDriver");
-	
-	// DB URL,계정, 비밀번호를 가지고 DB에 접속합니다.
-	con = DriverManager.getConnection(jdbcUrl, dbUser, dbPass);
-	
-	// querry를 등록하고 실행할 PreparedStatement 객체  레퍼런스
-	PreparedStatement pstmt = null;
-	// querry 결과를 저장하는 ResultSet 객체 레퍼런스
-	ResultSet rs = null;
-	String sql = "select * from articles"; 
-			// "insert into users (name, email, passwd, regdate)";	
-	pstmt = con.prepareStatement(sql);
-
-	rs = pstmt.executeQuery();
-	String comment = rs.getString("diarycomment");
-	String photo = rs.getString("photo");
-	
-} catch(Exception e) {
-	// 예외(Exception)이 발생하면 어떤 문제인지 파악하기 위한 코드가 여기에 들어갑니다.
-	e.printStackTrace();
-	System.out.print(e.getMessage());
-} 
-%>
 <!-- Portfolio -->
 <section class="content-section" id="portfolio">
 	<div class="container">
@@ -71,22 +35,31 @@ try {
           	<h2 class="mb-5">Recent Diaries</h2>
 		</div>
 			<div class="row no-gutters">
+			
+<%
+BoardDBBean dbcontroller = BoardDBBean.getInstance();
+ArrayList<Article> diaryArticles = dbcontroller.getDiaryArticles();
 
-<% for(int i = 0; i < 4; i++) {%>
-
+for(int i = 0; i < diaryArticles.size(); i++) {
+	Article at = diaryArticles.get(i);
+%>	
 				<div class="col-lg-6">
 		        	<a class="portfolio-item" href="#">
 		          		<span class="caption">
 		            		<span class="caption-content">
 		              			<h2>Stationary</h2>
 		              				<p class="mb-0">
-										<%= comment %>
+										<%= at.getComment() %>
 									</p>
 							</span>
 						</span>
-					<img class="<%= photo %>" src="../images/portfolio-1.jpg" alt="">
+					<img class="img-fluid" src = <%="../images/" + at.getPhoto() %> alt="">
 					</a>
 				</div>
+<%
+}
+%>				
+				
 			</div>  
         </div>
     </section>
